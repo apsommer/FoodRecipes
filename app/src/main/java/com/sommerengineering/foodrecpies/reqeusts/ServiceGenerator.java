@@ -20,7 +20,7 @@ public class ServiceGenerator {
     private static RecipeApi recipeApi = retrofit.create(RecipeApi.class);
 
     // expose singleton
-    public RecipeApi getRecipeApi() {
+    public static RecipeApi getRecipeApi() {
         return recipeApi;
     }
 }
