@@ -7,6 +7,7 @@ import android.view.View;
 
 public class RecipeListActivity extends BaseActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,4 +24,5 @@ public class RecipeListActivity extends BaseActivity {
             }
         });
     }
+
 }
