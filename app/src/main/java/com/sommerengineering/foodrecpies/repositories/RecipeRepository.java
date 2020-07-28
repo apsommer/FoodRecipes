@@ -35,4 +35,11 @@ public class RecipeRepository {
         // call local cache or remote source
         return client.getRecipes();
     }
+
+    public void searchRecipesApi(String query, int page) {
+
+        // ensure valid page number
+        if (page == 0) page = 1;
+        client.searchRecipesApi(query, page);
+    }
 }

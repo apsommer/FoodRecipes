@@ -23,4 +23,10 @@ public class RecipeListViewModel extends ViewModel {
         // call repo
         return recipeRepository.getRecipes();
     }
+
+    public void searchRecipesApi(String query, int page) {
+
+        // call repo
+        recipeRepository.searchRecipesApi(query, page);
+    }
 }
