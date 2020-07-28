@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network>
+<!-- discussion here about network config tags related to Glide allowing http (opposed to https)
+sources for API > 28, this worked fine on API 30 without this additional config so leaving it blank,
+contained in lecture Network Security Config for HTTP -->
+</network>
