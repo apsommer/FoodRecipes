@@ -1,6 +1,9 @@
 package com.sommerengineering.foodrecpies;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +14,7 @@ import com.sommerengineering.foodrecpies.reqeusts.RecipeApi;
 import com.sommerengineering.foodrecpies.reqeusts.ServiceGenerator;
 import com.sommerengineering.foodrecpies.reqeusts.responses.RecipeResponse;
 import com.sommerengineering.foodrecpies.reqeusts.responses.RecipeSearchResponse;
+import com.sommerengineering.foodrecpies.viewmodels.RecipeListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +27,8 @@ public class RecipeListActivity extends BaseActivity {
 
     private static final String TAG = "RecipeListActivity ~~";
 
+    private RecipeListViewModel recipeListViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,10 +37,18 @@ public class RecipeListActivity extends BaseActivity {
         // this method is overriden in base class
         setContentView(R.layout.activity_recipe_list);
 
-        findViewById(R.id.test).setOnClickListener(new View.OnClickListener() {
+        recipeListViewModel = new ViewModelProvider(this).get(RecipeListViewModel.class);
+
+        subscribeObservers();
+    }
+
+    private void subscribeObservers() {
+
+        recipeListViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
+
             @Override
-            public void onClick(View view) {
-                testRetrofitRequest();
+            public void onChanged(List<Recipe> recipes) {
+
             }
         });
     }
