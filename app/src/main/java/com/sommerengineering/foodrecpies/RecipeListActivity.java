@@ -1,6 +1,7 @@
 package com.sommerengineering.foodrecpies;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
@@ -50,7 +51,7 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         // subscribe to livedata streams
         initRecycler();
         subscribeObservers();
-        testRetrofitRequest();
+        initSearchView();
     }
 
     private void initRecycler() {
@@ -60,6 +61,27 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
+    }
+
+    private void initSearchView() {
+
+        final SearchView searchView = findViewById(R.id.search_view);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                // call viewmodel
+                recipeListViewModel.searchRecipesApi(query, 1);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 
     private void subscribeObservers() {
@@ -75,16 +97,6 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
                 adapter.setRecipes(recipes);
             }
         });
-    }
-
-    public void searchRecipesApi(String query, int page) {
-
-        // call viewmodel
-        recipeListViewModel.searchRecipesApi(query, page);
-    }
-
-    private void testRetrofitRequest() {
-        searchRecipesApi("chicken" , 1);
     }
 
     @Override
