@@ -52,8 +52,10 @@ public class RecipeApiClient {
         if (retrieveRecipesRunnable != null) retrieveRecipesRunnable = null;
         retrieveRecipesRunnable = new RetrieveRecipesRunnable(query, page);
 
+        // start the endpoint query
         final Future handler = AppExecutors.getInstance().networkIO().submit(retrieveRecipesRunnable);
 
+        // cancel the query after timeout
         AppExecutors.getInstance().networkIO().schedule(new Runnable() {
             @Override
             public void run() {
@@ -64,6 +66,7 @@ public class RecipeApiClient {
         }, Constants.NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
     }
 
+    // define
     private class RetrieveRecipesRunnable implements Runnable {
 
         private String query;
@@ -81,9 +84,12 @@ public class RecipeApiClient {
 
             try {
 
-                // execute call on background thread
+                // execute call on via background thread
                 Response response = getRecipes(query, page).execute();
 
+                // this waits until results received, no callback
+
+                // user cancellation flag
                 if (cancelRequest) return;
 
                 // ok
@@ -95,14 +101,20 @@ public class RecipeApiClient {
 
                     if (page == 1) recipes.postValue(list);
                     else {
+
                         List<Recipe> current = recipes.getValue();
                         current.addAll(list);
+
+                        // update livedata
                         recipes.postValue(current);
                     }
 
                 // error
                 } else {
+
                     Log.e(TAG, "run: " + response.errorBody());
+
+                    // update livedata
                     recipes.postValue(null);
                 }
 
