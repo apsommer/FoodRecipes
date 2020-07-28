@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.sommerengineering.foodrecpies.R;
 import com.sommerengineering.foodrecpies.models.Recipe;
 
@@ -36,13 +38,22 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int i) {
 
         // set layout attributes with data from the recipes list
-        ((RecipeViewHolder) holder).title.setText(recipes.get(position).getTitle());
-        ((RecipeViewHolder) holder).publisher.setText(recipes.get(position).getPublisher());
+        ((RecipeViewHolder) holder).title.setText(recipes.get(i).getTitle());
+        ((RecipeViewHolder) holder).publisher.setText(recipes.get(i).getPublisher());
         ((RecipeViewHolder) holder).score.setText(
-                String.valueOf(Math.round(recipes.get(position).getSocial_rank())));
+                String.valueOf(Math.round(recipes.get(i).getSocial_rank())));
+
+        // glide library handles fetching url
+        RequestOptions requestOptions = new RequestOptions()
+                .placeholder(R.drawable.ic_launcher_background);
+
+        Glide.with(holder.itemView.getContext())
+                .setDefaultRequestOptions(requestOptions)
+                .load(recipes.get(i).getImage_url())
+                .into(((RecipeViewHolder) holder).image);
     }
 
     @Override
