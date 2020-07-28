@@ -1,6 +1,7 @@
 package com.sommerengineering.foodrecpies.adapters;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,7 +14,7 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder implements View.On
 
     // attributes of recipe details layout
     TextView title, publisher, score;
-    AppCompatImageView image;
+    ImageView image;
     OnRecipeListener onRecipeListener;
 
     public RecipeViewHolder(@NonNull View itemView, OnRecipeListener onRecipeListener) {
@@ -24,10 +25,10 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder implements View.On
         itemView.setOnClickListener(this);
 
         // get references to view entities
-        title.findViewById(R.id.recipe_title);
-        publisher.findViewById(R.id.recipe_publisher);
-        score.findViewById(R.id.recipe_social_score);
-        image.findViewById(R.id.recipe_image);
+        title = itemView.findViewById(R.id.recipe_title);
+        publisher = itemView.findViewById(R.id.recipe_publisher);
+        score = itemView.findViewById(R.id.recipe_social_score);
+        image = itemView.findViewById(R.id.recipe_image);
     }
 
     @Override

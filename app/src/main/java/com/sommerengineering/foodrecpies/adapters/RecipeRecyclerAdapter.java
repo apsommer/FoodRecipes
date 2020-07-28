@@ -12,6 +12,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.sommerengineering.foodrecpies.R;
 import com.sommerengineering.foodrecpies.models.Recipe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,9 +23,9 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private List<Recipe> recipes;
     private OnRecipeListener onRecipeListener;
 
-    public RecipeRecyclerAdapter(List<Recipe> recipes, OnRecipeListener onRecipeListener) {
-        this.recipes = recipes;
+    public RecipeRecyclerAdapter(OnRecipeListener onRecipeListener) {
         this.onRecipeListener = onRecipeListener;
+        recipes = new ArrayList<>();
     }
 
     @NonNull
@@ -50,7 +51,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         RequestOptions requestOptions = new RequestOptions()
                 .placeholder(R.drawable.ic_launcher_background);
 
-        Glide.with(holder.itemView.getContext())
+        Glide.with(((RecipeViewHolder) holder).itemView)
                 .setDefaultRequestOptions(requestOptions)
                 .load(recipes.get(i).getImage_url())
                 .into(((RecipeViewHolder) holder).image);
@@ -58,6 +59,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
+        if (recipes == null) return 0;
         return recipes.size();
     }
 

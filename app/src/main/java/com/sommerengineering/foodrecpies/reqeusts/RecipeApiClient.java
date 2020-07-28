@@ -24,7 +24,7 @@ import retrofit2.Response;
  */
 public class RecipeApiClient {
 
-    private static final String TAG = "RecipeApiClient";
+    private static final String TAG = "RecipeApiClient ~~";
 
     // singleton
     private static RecipeApiClient instance;
@@ -47,6 +47,8 @@ public class RecipeApiClient {
 
     private RetrieveRecipesRunnable retrieveRecipesRunnable;
     public void searchRecipesApi(String query, int page) {
+
+        Log.d(TAG, "searchRecipesApi: called");
 
         // ensure new query
         if (retrieveRecipesRunnable != null) retrieveRecipesRunnable = null;
@@ -86,6 +88,8 @@ public class RecipeApiClient {
 
                 // execute call on via background thread
                 Response response = getRecipes(query, page).execute();
+
+                Log.d(TAG, "run: here");
 
                 // this waits until results received, no callback
 
