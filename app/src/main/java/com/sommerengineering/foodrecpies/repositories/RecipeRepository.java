@@ -14,10 +14,8 @@ import java.util.List;
  */
 public class RecipeRepository {
 
-    private static RecipeRepository instance;
-    private static RecipeApiClient client;
-
     // singleton instance
+    private static RecipeRepository instance;
     public static RecipeRepository getInstance() {
 
         if (instance == null) {
@@ -26,13 +24,18 @@ public class RecipeRepository {
         return instance;
     }
 
+    // get api client
+    private static RecipeApiClient client;
     private RecipeRepository() {
         client = RecipeApiClient.getInstance();
     }
 
+
     public LiveData<List<Recipe>> getRecipes() {
 
-        // call local cache or remote source
+        // todo logic call local db cache, if desired
+
+        // call remote source
         return client.getRecipes();
     }
 
@@ -41,5 +44,9 @@ public class RecipeRepository {
         // ensure valid page number
         if (page == 0) page = 1;
         client.searchRecipesApi(query, page);
+    }
+
+    public void cancelRequest() {
+        client.cancelRequest();
     }
 }

@@ -37,6 +37,7 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
     private RecipeListViewModel recipeListViewModel;
     private RecyclerView recyclerView;
     private RecipeRecyclerAdapter adapter;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +78,12 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
     public void onBackPressed() {
 
         if (recipeListViewModel.onBackedPressed()) super.onBackPressed();
-        displaySearchCategories();
+        else displaySearchCategories();
     }
 
     private void initSearchView() {
 
-        final SearchView searchView = findViewById(R.id.search_view);
+        searchView = findViewById(R.id.search_view);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
@@ -94,6 +95,10 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
 
                 // call viewmodel
                 recipeListViewModel.searchRecipesApi(query, 1);
+
+                // clear focus for proper back button behavior
+                searchView.clearFocus();
+
                 return false;
             }
 
@@ -114,6 +119,8 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
                 // do not update recipes if we are viewing categories
                 if (recipes == null || !recipeListViewModel.isViewingRecipes()) return;
 
+                recipeListViewModel.setIsViewingRecipes(true);
+                recipeListViewModel.setIsPerformingQuery(false);
                 Testing.printRecipes(recipes, TAG);
                 adapter.setRecipes(recipes);
             }
@@ -127,7 +134,11 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
 
     @Override
     public void onCategoryClick(String category) {
+
         adapter.displayLoading();
         recipeListViewModel.searchRecipesApi(category, 1);
+
+        // clear focus for proper back button behavior
+        searchView.clearFocus();
     }
 }

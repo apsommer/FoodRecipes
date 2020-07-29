@@ -48,8 +48,6 @@ public class RecipeApiClient {
     private RetrieveRecipesRunnable retrieveRecipesRunnable;
     public void searchRecipesApi(String query, int page) {
 
-        Log.d(TAG, "searchRecipesApi: called");
-
         // ensure new query
         if (retrieveRecipesRunnable != null) retrieveRecipesRunnable = null;
         retrieveRecipesRunnable = new RetrieveRecipesRunnable(query, page);
@@ -139,5 +137,9 @@ public class RecipeApiClient {
             Log.d(TAG, "cancelRequest: canceling the search request.");
             cancelRequest = true;
         }
+    }
+
+    public void cancelRequest() {
+        if (retrieveRecipesRunnable != null) retrieveRecipesRunnable.cancelRequest();
     }
 }
