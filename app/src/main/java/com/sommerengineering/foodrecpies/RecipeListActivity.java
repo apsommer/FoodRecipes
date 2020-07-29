@@ -1,7 +1,9 @@
 package com.sommerengineering.foodrecpies;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
@@ -10,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.sommerengineering.foodrecpies.adapters.OnRecipeListener;
@@ -57,6 +61,25 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
 
         // either viewing recipes, or categories
         if(!recipeListViewModel.isViewingRecipes()) displaySearchCategories();
+
+        // custom toolbar
+        setSupportActionBar(findViewById(R.id.toolbar));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.recipe_search_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        // normally switch statement here for each menu item, just one for this example
+        if (item.getItemId() == R.id.action_categories) {
+            displaySearchCategories();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void displaySearchCategories() {
