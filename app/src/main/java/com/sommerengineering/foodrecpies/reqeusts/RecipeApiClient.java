@@ -104,6 +104,7 @@ public class RecipeApiClient {
                     if (page == 1) recipes.postValue(list);
                     else {
 
+                        // get all previous recipes and append new ones
                         List<Recipe> current = recipes.getValue();
                         current.addAll(list);
 

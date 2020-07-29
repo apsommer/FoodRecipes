@@ -85,7 +85,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             return;
         }
 
-        // normal recipe list item ...
+        // standard recipe list item ...
 
         // set layout attributes with data from the recipes list
         ((RecipeViewHolder) holder).title.setText(recipes.get(i).getTitle());
@@ -102,8 +102,19 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
+
+        // category list item
         if (recipes.get(position).getSocial_rank() == -1) return CATEGORY_TYPE;
+
+        // loading animation between categories and search result
         else if (recipes.get(position).getTitle().equals("LOADING...")) return LOADING_TYPE;
+
+        // loading animation at bottom of query results due to pagination
+        else if (position == recipes.size() - 1
+                && position != 0
+                && !recipes.get(position).getTitle().equals("EXHAUSTED...")) return LOADING_TYPE;
+
+        // recipe item
         return RECIPE_TYPE;
     }
 

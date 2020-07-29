@@ -30,7 +30,6 @@ public class RecipeRepository {
         client = RecipeApiClient.getInstance();
     }
 
-
     public LiveData<List<Recipe>> getRecipes() {
 
         // todo logic call local db cache, if desired
@@ -39,11 +38,23 @@ public class RecipeRepository {
         return client.getRecipes();
     }
 
+    private String query;
+    private int page;
     public void searchRecipesApi(String query, int page) {
 
         // ensure valid page number
         if (page == 0) page = 1;
+
+        // save these members to automatically handle pagination request
+        this.query = query;
+        this.page = page;
+
+        // call into retrofit client to actually make the query
         client.searchRecipesApi(query, page);
+    }
+
+    public void searchNextPage() {
+        searchRecipesApi(query, page + 1);
     }
 
     public void cancelRequest() {

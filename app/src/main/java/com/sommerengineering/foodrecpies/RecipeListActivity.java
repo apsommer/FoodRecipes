@@ -95,6 +95,18 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         recyclerView.addItemDecoration(decoration);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+
+                // means "when user can no longer scroll in vertical direction"
+                if (!recyclerView.canScrollVertically(1)) {
+                    recipeListViewModel.searchNextPage();
+                }
+            }
+        });
     }
 
     @Override // called every time back button is pressed
