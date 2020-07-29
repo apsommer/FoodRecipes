@@ -23,7 +23,6 @@ public class BaseActivity extends AppCompatActivity {
         ConstraintLayout constraintLayout =
                 (ConstraintLayout) getLayoutInflater().inflate(R.layout.activity_base, null);
         FrameLayout frameLayout = constraintLayout.findViewById(R.id.activity_content);
-        progressBar = constraintLayout.findViewById(R.id.progress_bar);
 
         // put the specific activity layout passed to this method into the frame
         getLayoutInflater().inflate(layoutResID, frameLayout, true);

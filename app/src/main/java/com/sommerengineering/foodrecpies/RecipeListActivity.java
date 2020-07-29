@@ -73,6 +73,13 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         recyclerView.setAdapter(adapter);
     }
 
+    @Override // called every time back button is pressed
+    public void onBackPressed() {
+
+        if (recipeListViewModel.onBackedPressed()) super.onBackPressed();
+        displaySearchCategories();
+    }
+
     private void initSearchView() {
 
         final SearchView searchView = findViewById(R.id.search_view);
@@ -104,8 +111,9 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
             @Override
             public void onChanged(List<Recipe> recipes) {
 
-                if (recipes == null) return;
-                progressBar.setVisibility(View.INVISIBLE);
+                // do not update recipes if we are viewing categories
+                if (recipes == null || !recipeListViewModel.isViewingRecipes()) return;
+
                 Testing.printRecipes(recipes, TAG);
                 adapter.setRecipes(recipes);
             }

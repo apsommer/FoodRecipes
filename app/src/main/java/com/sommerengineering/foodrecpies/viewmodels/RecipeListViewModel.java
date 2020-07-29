@@ -17,7 +17,6 @@ public class RecipeListViewModel extends ViewModel {
 
     public RecipeListViewModel() {
         recipeRepository = RecipeRepository.getInstance();
-        isViewingRecipes = false;
     }
 
     public LiveData<List<Recipe>> getRecipes() {
@@ -29,8 +28,8 @@ public class RecipeListViewModel extends ViewModel {
     public void searchRecipesApi(String query, int page) {
 
         // call repo
-        recipeRepository.searchRecipesApi(query, page);
         isViewingRecipes = true;
+        recipeRepository.searchRecipesApi(query, page);
     }
 
     public boolean isViewingRecipes() {
@@ -39,5 +38,14 @@ public class RecipeListViewModel extends ViewModel {
 
     public void setIsViewingRecipes(boolean isViewingRecipes) {
         this.isViewingRecipes = isViewingRecipes;
+    }
+
+    // confusing mechanism, use navigation component
+    public boolean onBackedPressed() {
+        if (isViewingRecipes) {
+            isViewingRecipes = false;
+            return false;
+        }
+        return true;
     }
 }
