@@ -1,5 +1,6 @@
 package com.sommerengineering.foodrecpies.adapters;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.sommerengineering.foodrecpies.R;
 import com.sommerengineering.foodrecpies.models.Recipe;
+import com.sommerengineering.foodrecpies.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private static final int RECIPE_TYPE = 1;
     private static final int LOADING_TYPE = 2;
+    private static final int CATEGORY_TYPE = 3;
 
     private List<Recipe> recipes;
     private OnRecipeListener onRecipeListener;
@@ -48,6 +51,11 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         .inflate(R.layout.layout_loading_list_item, parent, false);
                 return new LoadingViewHolder(view);
 
+            } case CATEGORY_TYPE: {
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.layout_category_list_item, parent, false);
+                return new CategoryViewHolder(view, onRecipeListener);
+
             } default: {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.layout_recipe_list_item, parent, false);
@@ -61,6 +69,22 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         // loading list item has no data to bind
         if (getItemViewType(i) == LOADING_TYPE) return;
+
+        if (getItemViewType(i) == CATEGORY_TYPE) {
+
+            // glide library handles fetching url
+            RequestOptions requestOptions = new RequestOptions()
+                    .placeholder(R.drawable.ic_launcher_background);
+
+            Glide.with(holder.itemView.getContext())
+                    .setDefaultRequestOptions(requestOptions)
+                    .load(holder.itemView.getContext().getResources().getIdentifier(
+                            recipes.get(i).getImage_url(), "drawable", holder.itemView.getContext().getPackageName()))
+                    .into(((CategoryViewHolder) holder).categoryImage);
+
+            ((CategoryViewHolder) holder).categoryTitle.setText(recipes.get(i).getTitle());
+            return;
+        }
 
         // normal recipe list item ...
 
@@ -82,9 +106,23 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
-
-        if (recipes.get(position).getTitle().equals("LOADING...")) return LOADING_TYPE;
+        if (recipes.get(position).getSocial_rank() == -1) return CATEGORY_TYPE;
+        else if (recipes.get(position).getTitle().equals("LOADING...")) return LOADING_TYPE;
         return RECIPE_TYPE;
+    }
+
+    public void displaySearchCategories() {
+
+        List<Recipe> categories = new ArrayList<>();
+        for (int i = 0; i < Constants.DEFAULT_SEARCH_CATEGORIES.length; i ++) {
+            Recipe recipe = new Recipe();
+            recipe.setTitle(Constants.DEFAULT_SEARCH_CATEGORY_IMAGES[i]);
+            recipe.setImage_url(Constants.DEFAULT_SEARCH_CATEGORY_IMAGES[i]);
+            recipe.setSocial_rank(-1);
+            categories.add(recipe);
+        }
+        recipes = categories;
+        notifyDataSetChanged();
     }
 
     public void displayLoading() {
