@@ -144,6 +144,7 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
         });
     }
 
+    // pub/sub pattern goes all the way client runnable
     private void subscribeObservers() {
 
         recipeListViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
