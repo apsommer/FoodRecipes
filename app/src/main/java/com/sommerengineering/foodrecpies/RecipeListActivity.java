@@ -20,6 +20,7 @@ import com.sommerengineering.foodrecpies.reqeusts.ServiceGenerator;
 import com.sommerengineering.foodrecpies.reqeusts.responses.RecipeResponse;
 import com.sommerengineering.foodrecpies.reqeusts.responses.RecipeSearchResponse;
 import com.sommerengineering.foodrecpies.util.Testing;
+import com.sommerengineering.foodrecpies.util.VerticalSpacingItemDecorator;
 import com.sommerengineering.foodrecpies.viewmodels.RecipeListViewModel;
 
 import java.util.ArrayList;
@@ -66,9 +67,10 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
 
         recyclerView = findViewById(R.id.recipe_list);
         adapter = new RecipeRecyclerAdapter(this);
+        VerticalSpacingItemDecorator decoration = new VerticalSpacingItemDecorator(30);
+        recyclerView.addItemDecoration(decoration);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-
     }
 
     private void initSearchView() {

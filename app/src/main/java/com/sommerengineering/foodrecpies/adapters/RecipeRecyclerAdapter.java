@@ -41,12 +41,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         View view;
         switch (viewType) {
 
-            case RECIPE_TYPE: {
-                view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.layout_recipe_list_item, parent, false);
-                return new RecipeViewHolder(view, onRecipeListener);
-
-            } case LOADING_TYPE: {
+            case LOADING_TYPE: {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.layout_loading_list_item, parent, false);
                 return new LoadingViewHolder(view);
@@ -56,6 +51,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         .inflate(R.layout.layout_category_list_item, parent, false);
                 return new CategoryViewHolder(view, onRecipeListener);
 
+            // default is RECIPE_TYPE
             } default: {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.layout_recipe_list_item, parent, false);
@@ -70,18 +66,21 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         // loading list item has no data to bind
         if (getItemViewType(i) == LOADING_TYPE) return;
 
+        // glide library handles image loading into imageviews
+        RequestOptions requestOptions = new RequestOptions()
+                .placeholder(R.drawable.ic_launcher_background);
+
+        // category display
         if (getItemViewType(i) == CATEGORY_TYPE) {
 
-            // glide library handles fetching url
-            RequestOptions requestOptions = new RequestOptions()
-                    .placeholder(R.drawable.ic_launcher_background);
-
+            // glide library uses local drawables
             Glide.with(holder.itemView.getContext())
                     .setDefaultRequestOptions(requestOptions)
                     .load(holder.itemView.getContext().getResources().getIdentifier(
                             recipes.get(i).getImage_url(), "drawable", holder.itemView.getContext().getPackageName()))
                     .into(((CategoryViewHolder) holder).categoryImage);
 
+            // set layout attribute with data from the recipes list
             ((CategoryViewHolder) holder).categoryTitle.setText(recipes.get(i).getTitle());
             return;
         }
@@ -95,9 +94,6 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 String.valueOf(Math.round(recipes.get(i).getSocial_rank())));
 
         // glide library handles fetching url
-        RequestOptions requestOptions = new RequestOptions()
-                .placeholder(R.drawable.ic_launcher_background);
-
         Glide.with(((RecipeViewHolder) holder).itemView)
                 .setDefaultRequestOptions(requestOptions)
                 .load(recipes.get(i).getImage_url())
@@ -113,14 +109,18 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void displaySearchCategories() {
 
+        // build list of custom recipes to represent categories
         List<Recipe> categories = new ArrayList<>();
         for (int i = 0; i < Constants.DEFAULT_SEARCH_CATEGORIES.length; i ++) {
+
             Recipe recipe = new Recipe();
             recipe.setTitle(Constants.DEFAULT_SEARCH_CATEGORY_IMAGES[i]);
             recipe.setImage_url(Constants.DEFAULT_SEARCH_CATEGORY_IMAGES[i]);
             recipe.setSocial_rank(-1);
             categories.add(recipe);
         }
+
+        // trigger UI update
         recipes = categories;
         notifyDataSetChanged();
     }
@@ -141,6 +141,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
+    // determines if the UI is currently loading
     private boolean isLoading() {
 
         if (recipes != null && recipes.size() > 0) {
