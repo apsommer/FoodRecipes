@@ -20,6 +20,9 @@ import java.util.List;
  */
 public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private static final int RECIPE_TYPE = 1;
+    private static final int LOADING_TYPE = 2;
+
     private List<Recipe> recipes;
     private OnRecipeListener onRecipeListener;
 
@@ -32,14 +35,34 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        // todo recycler to use multiple layouts
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.layout_recipe_list_item, parent, false);
-        return new RecipeViewHolder(view, onRecipeListener);
+        View view;
+        switch (viewType) {
+
+            case RECIPE_TYPE: {
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.layout_recipe_list_item, parent, false);
+                return new RecipeViewHolder(view, onRecipeListener);
+
+            } case LOADING_TYPE: {
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.layout_loading_list_item, parent, false);
+                return new LoadingViewHolder(view);
+
+            } default: {
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.layout_recipe_list_item, parent, false);
+                return new RecipeViewHolder(view, onRecipeListener);
+            }
+        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int i) {
+
+        // loading list item has no data to bind
+        if (getItemViewType(i) == LOADING_TYPE) return;
+
+        // normal recipe list item ...
 
         // set layout attributes with data from the recipes list
         ((RecipeViewHolder) holder).title.setText(recipes.get(i).getTitle());
@@ -58,15 +81,46 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     @Override
+    public int getItemViewType(int position) {
+
+        if (recipes.get(position).getTitle().equals("LOADING...")) return LOADING_TYPE;
+        return RECIPE_TYPE;
+    }
+
+    public void displayLoading() {
+
+        // toggle the loading custom animation
+        // means "is not already loading, and we want to show loading, so trigger the custom view"
+        if (!isLoading()) {
+
+            // use the recipe title to identify the loading state
+            Recipe recipe = new Recipe();
+            recipe.setTitle("LOADING...");
+            List<Recipe> loadingList = new ArrayList<>();
+            loadingList.add(recipe);
+            recipes = loadingList;
+            notifyDataSetChanged();
+        }
+    }
+
+    private boolean isLoading() {
+
+        if (recipes != null && recipes.size() > 0) {
+            if (recipes.get(recipes.size()-1).getTitle().equals("LOADING...")) return true;
+        }
+        return false;
+    }
+
+    @Override
     public int getItemCount() {
         if (recipes == null) return 0;
         return recipes.size();
     }
 
-    // initialize with adapter, probably should be in constructor
+    // initialize with adapter, can not be in constructor
     public void setRecipes(List<Recipe> recipes) {
         this.recipes = recipes;
-        notifyDataSetChanged();
+        notifyDataSetChanged(); // turns off the loading indicator
     }
 }
 
