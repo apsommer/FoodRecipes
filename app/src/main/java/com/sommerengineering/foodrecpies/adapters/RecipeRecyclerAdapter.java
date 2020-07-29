@@ -167,6 +167,11 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return recipes.size();
     }
 
+    public Recipe getSelectedRecipe(int position) {
+        if (recipes == null || recipes.size() == 0) return null;
+        return recipes.get(position);
+    }
+
     // initialize with adapter, can not be in constructor
     public void setRecipes(List<Recipe> recipes) {
         this.recipes = recipes;

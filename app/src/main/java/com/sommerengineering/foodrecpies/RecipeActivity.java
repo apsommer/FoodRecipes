@@ -1,18 +1,26 @@
 package com.sommerengineering.foodrecpies;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.sommerengineering.foodrecpies.models.Recipe;
+import com.sommerengineering.foodrecpies.viewmodels.RecipeListViewModel;
+import com.sommerengineering.foodrecpies.viewmodels.RecipeViewModel;
 
 public class RecipeActivity extends BaseActivity {
 
+    private static final String TAG = "RecipeActivity";
+
     Recipe recipe;
+    RecipeViewModel recipeViewModel;
 
     // UI
     private ImageView recipeImage;
@@ -32,13 +40,32 @@ public class RecipeActivity extends BaseActivity {
         ingredientsContainer = findViewById(R.id.ingredients_container);
         scrollView = findViewById(R.id.parent);
 
+        // get singleton viewmodel
+        recipeViewModel = new ViewModelProvider(this).get(RecipeViewModel.class);
+
         // get passed recipe object
         getIncomingIntent();
+
+        subscribeObservers();
     }
 
     private void getIncomingIntent() {
         if (getIntent().hasExtra("recipe")) {
             recipe = getIntent().getParcelableExtra("recipe");
+            Log.d(TAG, "getIncomingIntent: " + recipe.getTitle());
+            recipeViewModel.searchRecipeById(recipe.getRecipe_id());
         }
+    }
+
+    private void subscribeObservers() {
+        recipeViewModel.getRecipe().observe(this, new Observer<Recipe>() {
+
+            @Override
+            public void onChanged(Recipe recipe) {
+                if (recipe == null) return;
+                Log.d(TAG, "onChanged: " + recipe.getTitle());
+                for (String ingredient: recipe.getIngredients()) Log.d(TAG, ingredient);
+            }
+        });
     }
 }

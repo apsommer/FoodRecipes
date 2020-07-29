@@ -38,6 +38,10 @@ public class RecipeRepository {
         return client.getRecipes();
     }
 
+    public LiveData<Recipe> getRecipe() {
+        return client.getRecipe();
+    }
+
     private String query;
     private int page;
     public void searchRecipesApi(String query, int page) {
@@ -51,6 +55,10 @@ public class RecipeRepository {
 
         // call into retrofit client to actually make the query
         client.searchRecipesApi(query, page);
+    }
+
+    public void searchRecipeById(String id) {
+        client.searchRecipeById(id);
     }
 
     public void searchNextPage() {
