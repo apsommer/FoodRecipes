@@ -39,9 +39,11 @@ public class RecipeApiClient {
     // expose livedata streams
     private MutableLiveData<List<Recipe>> recipes;
     private MutableLiveData<Recipe> recipe;
+    private MutableLiveData<Boolean> isRecipeTimedOut;
     private RecipeApiClient() {
         recipes = new MutableLiveData<>();
         recipe = new MutableLiveData<>();
+        isRecipeTimedOut = new MutableLiveData<>();
     }
 
     public LiveData<List<Recipe>> getRecipes() {
@@ -50,6 +52,10 @@ public class RecipeApiClient {
 
     public LiveData<Recipe> getRecipe() {
         return recipe;
+    }
+
+    public LiveData<Boolean> isRecipeTimedOut() {
+        return isRecipeTimedOut;
     }
 
     private RetrieveRecipesRunnable retrieveRecipesRunnable;
@@ -67,7 +73,7 @@ public class RecipeApiClient {
             @Override
             public void run() {
 
-                // let user know its timed out
+                // let user know it's timed out
                 handler.cancel(true);
             }
         }, Constants.NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -154,12 +160,13 @@ public class RecipeApiClient {
         retrieveRecipeRunnable = new RetrieveRecipeRunnable(id);
 
         final Future handler = AppExecutors.getInstance().networkIO().submit(retrieveRecipeRunnable);
+        isRecipeTimedOut.postValue(false);
 
         AppExecutors.getInstance().networkIO().schedule(new Runnable() {
 
             @Override
             public void run() {
-                // let user know it's timed out
+                isRecipeTimedOut.postValue(true);
                 handler.cancel(true);
             }
         }, Constants.NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);

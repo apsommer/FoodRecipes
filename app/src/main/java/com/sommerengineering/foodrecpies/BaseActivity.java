@@ -29,6 +29,8 @@ public class BaseActivity extends AppCompatActivity {
 
         // continue with normal OS flow using this base activity constraint layout
         super.setContentView(constraintLayout);
+
+        progressBar = findViewById(R.id.progress_bar);
     }
 
     // toggle the progress bar visibility
