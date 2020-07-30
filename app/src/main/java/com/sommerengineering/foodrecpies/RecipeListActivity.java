@@ -153,6 +153,8 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
             @Override
             public void onChanged(List<Recipe> recipes) {
 
+                Log.d(TAG, "onChanged: ");
+
                 // do not update recipes if we are viewing categories
                 if (recipes == null || !recipeListViewModel.isViewingRecipes()) return;
 
@@ -160,6 +162,16 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
                 recipeListViewModel.setIsPerformingQuery(false);
                 Testing.printRecipes(recipes, TAG);
                 adapter.setRecipes(recipes);
+            }
+        });
+
+        recipeListViewModel.isQueryExhausted().observe(this, new Observer<Boolean>() {
+
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    adapter.setQueryExhausted();
+                }
             }
         });
     }

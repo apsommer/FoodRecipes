@@ -27,9 +27,12 @@ public class RecipeListViewModel extends ViewModel {
         isViewingRecipes = false;
     }
 
-    // call repo
     public LiveData<List<Recipe>> getRecipes() {
         return recipeRepository.getRecipes();
+    }
+
+    public LiveData<Boolean> isQueryExhausted() {
+        return recipeRepository.isQueryExhausted();
     }
 
     public void searchRecipesApi(String query, int page) {
@@ -43,7 +46,7 @@ public class RecipeListViewModel extends ViewModel {
     public void searchNextPage() {
 
         // if we are performing a query or viewing categories do not request next page
-        if (isPerformingQuery || !isViewingRecipes) return;
+        if (isPerformingQuery || !isViewingRecipes || isQueryExhausted().getValue()) return;
         recipeRepository.searchNextPage();
     }
 

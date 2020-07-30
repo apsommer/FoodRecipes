@@ -63,6 +63,7 @@ public class RecipeActivity extends BaseActivity {
     }
 
     private void subscribeObservers() {
+
         recipeViewModel.getRecipe().observe(this, new Observer<Recipe>() {
 
             @Override
